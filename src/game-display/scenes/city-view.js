@@ -47,11 +47,3 @@ export function renderCity() {
     }
 }
 
-// Helper function to generate a random number within a range
-function getRandomNumber(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function initialiseCityView() {
-
-}

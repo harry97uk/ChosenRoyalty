@@ -1,12 +1,25 @@
+import { player } from "../../game-logic/player.js";
 import { renderCity } from "../scenes/city-view.js";
 import { renderCastleScene } from "../scenes/military-view.js";
 import { renderThroneRoom } from "../scenes/throne-room.js";
+import { decisionsButton, displayDecisions } from "./decisions-display.js";
+import { statsButton, displayStats } from "./stats-display.js";
 
 //Describes what scene the player is in (0 = none, 1 = throne, 2 = city, 3 = defence)
 let scene = 0
 
 export function setScene(value) {
     scene = value
+    const statsDisplay = document.getElementById("stats-container")
+    if (statsDisplay.style.display === "flex") {
+        statsDisplay.style.display = "none"
+        displayStats();
+    }
+    const decisionsDisplay = document.getElementById("decisions-container")
+    if (decisionsDisplay.style.display === "flex") {
+        decisionsDisplay.style.display = "none"
+        displayDecisions();
+    }
 }
 
 export function initialiseGameDisplay() {
@@ -41,104 +54,6 @@ function initialiseInfoBar() {
 
     const gameContainer = document.getElementById("game-container")
     gameContainer.appendChild(infoBar)
-}
-
-function statsButton() {
-    const statsButton = document.createElement("div")
-    statsButton.classList.add("stats-button")
-    statsButton.id = "stats-button"
-    statsButton.innerText = "S"
-    statsButton.onclick = displayStats
-
-    statsButton.appendChild(initStatsDisplay())
-
-    const gameContainer = document.getElementById("game-container")
-    gameContainer.appendChild(statsButton)
-}
-
-function initStatsDisplay() {
-    const statsDisplay = document.createElement("div")
-    statsDisplay.id = "stats-container"
-    statsDisplay.style.display = "none"
-    return statsDisplay
-}
-
-function displayStats() {
-    const statsDisplay = document.getElementById("stats-container")
-    statsDisplay.style.display === "flex" ? statsDisplay.style.display = "none" : statsDisplay.style.display = "flex";
-
-    switch (scene) {
-        case 1:
-            displayThroneStats()
-            break;
-        case 2:
-            displayCityStats()
-            break;
-        case 3:
-            displayDefenceStats()
-            break;
-        default:
-            break;
-    }
-}
-
-function displayThroneStats() {
-    
-}
-
-function displayCityStats() {
-    
-}
-
-function displayDefenceStats() {
-    
-}
-
-function decisionsButton() {
-    const decisionsButton = document.createElement("div")
-    decisionsButton.classList.add("decisions-button")
-    decisionsButton.id = "decisions-button"
-    decisionsButton.innerText = "D"
-    decisionsButton.onclick = displayDecisions
-
-    decisionsButton.appendChild(initDecisionsDisplay())
-
-    const gameContainer = document.getElementById("game-container")
-    gameContainer.appendChild(decisionsButton)
-}
-
-function initDecisionsDisplay() {
-    const decisionsDisplay = document.createElement("div")
-    decisionsDisplay.id = "decisions-container"
-    return decisionsDisplay
-}
-
-function displayDecisions() {
-    switch (scene) {
-        case 1:
-            displayThroneDecisions()
-            break;
-        case 2:
-            displayCityDecisions()
-            break;
-        case 3:
-            displayDefenceDecisions()
-            break;
-        default:
-            break;
-    }
-}
-
-function displayThroneDecisions() {
-    
-}
-
-function displayCityDecisions() {
-    
-}
-
-function displayDefenceDecisions() {
-    
 }
 
 function throneRoomButton() {
@@ -188,7 +103,7 @@ function initManpowerDisplay() {
     const manpowerDisplay = document.createElement("div")
     manpowerDisplay.classList.add("manpower-display")
     manpowerDisplay.id = "manpower-display"
-    manpowerDisplay.innerText = `Manpower: ${0}`
+    manpowerDisplay.innerText = `Manpower: ${6}`
     return manpowerDisplay
 }
 
@@ -203,6 +118,12 @@ function initialiseTime() {
 export function setTime(year, month, day) {
     const time = document.getElementById("time-display")
     time.innerText = `Year: ${year} Month: ${month} Day: ${day}`
+}
+
+export function updateDisplayValues() {
+    setGoldDisplay(player.gold)
+    setOpinionDisplay(player.opinion)
+    setManpowerDisplay(player.manpower)
 }
 
 export function setGoldDisplay(value) {

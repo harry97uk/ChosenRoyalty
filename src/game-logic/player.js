@@ -9,14 +9,15 @@ let player = {
 
 let city = {
     residents: 30,
-    farmers: 15,
+    houses: 40,
+    farms: 8,
     businesses: 6,
     growth: 1,
     services: 3
 }
 
 let defences = {
-    guards: 2,
+    guards: 0,
     wallDefenceLevel: 1,
     boilingOil: false,
     ballistas: 0
@@ -62,7 +63,13 @@ function calculateManpowerChange() {
 }
 
 function calculateCityGrowth() {
-    city.residents += Math.floor((city.residents/100) * city.growth) + 1
+    const newResidentsValue = city.residents + Math.floor((city.residents/100) * city.growth) + 1
+    if (newResidentsValue <= city.houses) {
+        city.residents = newResidentsValue
+    } else {
+        city.residents = city.houses
+    }
+    
 }
 
 export { player, calculateMonthlyChanges, calculateYearlyChanges, city, defences, army }
