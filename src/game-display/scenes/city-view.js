@@ -3,7 +3,7 @@ import { setScene } from "../game-interface/game-interface.js";
 // Render the city
 export function renderCity() {
     setScene(2)
-    const canvas = document.getElementById("game-canvas")
+    const canvas = document.getElementById("background-canvas")
     const ctx = canvas.getContext('2d')
 
     // Clear the canvas

@@ -1,5 +1,4 @@
-import { updateDisplayValues } from "../../game-display/game-interface/game-interface.js";
-import { city, player, defences, army } from "../player.js";
+import { city, player, defences, army, population } from "../player.js";
 
 const operationHandlers = {
     add: {
@@ -16,6 +15,11 @@ const operationHandlers = {
         operate: (val, prevVal) => {
             return val * prevVal
         }
+    },
+    activate: {
+        operate: (val, prevVal) => {
+            return true
+        }
     }
 }
 
@@ -31,6 +35,13 @@ const propertyHandlers = {
         applyEffect: (property, value, effect) => {
             if (property in city && effect in operationHandlers) {
                 city[property] = operationHandlers[effect].operate(value, city[property]);
+            }
+        }
+    },
+    population: {
+        applyEffect: (property, value, effect) => {
+            if (property in population && effect in operationHandlers) {
+                population[property] = operationHandlers[effect].operate(value, population[property]);
             }
         }
     },
@@ -55,12 +66,47 @@ function executeEffectChange(effect, effectValue, propertyToChange, targetObject
     if (targetHandler && typeof targetHandler.applyEffect === "function") {
         targetHandler.applyEffect(propertyToChange, effectValue, effect);
     }
-    updateDisplayValues()
 }
 
-export function executeDecision(effects) {
+export function executeDecision(effects, costs) {
     effects.forEach(({ effect, effectValue, propertyToChange, targetObject }) => {
+        executeEffectChange(effect, effectValue, propertyToChange, targetObject)
+    });
+    costs.forEach(({ effect, effectValue, propertyToChange, targetObject }) => {
         executeEffectChange(effect, effectValue, propertyToChange, targetObject)
     });
 }
 
+export function playerCanAffordDecisionCost(costs) {
+    let canAfford = true
+    costs.forEach(c => {
+        if (c.propertyToChange === "gold" && c.effect === "subtract") {
+            if (player.gold - c.effectValue < 0) {
+                canAfford = false
+            }
+        }
+        if (c.propertyToChange === "unemployed" && c.effect === "subtract") {
+            if (population.unemployed - c.effectValue < 0) {
+                canAfford = false
+            }
+        }
+    })
+    return canAfford
+}
+
+export function costNeeded(costs) {
+    let costNeeded = ""
+    costs.forEach(c => {
+        if (c.propertyToChange === "gold" && c.effect === "subtract") {
+            if (player.gold - c.effectValue < 0) {
+                costNeeded = "gold"
+            }
+        }
+        if (c.propertyToChange === "unemployed" && c.effect === "subtract") {
+            if (population.unemployed - c.effectValue < 0) {
+                costNeeded = "manpower"
+            }
+        }
+    })
+    return costNeeded
+}

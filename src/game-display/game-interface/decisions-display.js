@@ -1,7 +1,9 @@
 import { cityDecisions } from "../../game-logic/decisions/city-decisions.js";
-import { executeDecision } from "../../game-logic/decisions/decisions.js";
-import { scene } from "./game-interface.js"
-import { updateCityStats } from "./stats-display.js";
+import { costNeeded, executeDecision, playerCanAffordDecisionCost } from "../../game-logic/decisions/decisions.js";
+import { defenceDecisions } from "../../game-logic/decisions/defence-decisions.js";
+import { playAudio } from "../../game-sounds/audio.js";
+import { scene, updateDisplayValues } from "./game-interface.js"
+import { updateStats } from "./stats-display.js";
 
 export function decisionsButton() {
     const decisionsButton = document.createElement("div")
@@ -56,16 +58,8 @@ function displayCityDecisions() {
         decisionsDisplay.removeChild(decisionsDisplay.lastChild);
     }
 
-    console.log(cityDecisions);
     cityDecisions.forEach(d => {
-        const decision = document.createElement("div")
-        decision.classList.add("decision")
-        decision.innerText = d.name
-        decision.addEventListener('click', function(){
-            executeDecision(d.effects)
-            updateCityStats()
-        })
-        decisionsDisplay.appendChild(decision)
+        decisionsDisplay.appendChild(addDecisionButtonFunctionality(d))
     })
 }
 
@@ -74,4 +68,38 @@ function displayDefenceDecisions() {
     while (decisionsDisplay.firstChild) {
         decisionsDisplay.removeChild(decisionsDisplay.lastChild);
     }
+
+    defenceDecisions.forEach(d => {
+        decisionsDisplay.appendChild(addDecisionButtonFunctionality(d))
+    })
+}
+
+function highlightCostNeeded(costName) {
+    const costDisplay = document.getElementById(`${costName}-display`)
+    costDisplay.classList.add("flashing")
+    setTimeout(() => {
+        costDisplay.classList.remove("flashing")
+    }, 2000);
+}
+
+function addDecisionButtonFunctionality(d) {
+    const decision = document.createElement("div")
+    decision.classList.add("decision")
+    decision.innerText = d.name
+    decision.addEventListener('click', function () {
+        if (playerCanAffordDecisionCost(d.costs)) {
+            playAudio("decision-chosen")
+            executeDecision(d.effects, d.costs)
+            updateDisplayValues()
+            if (document.getElementById("stats-container").style.display === "flex") {
+                updateStats()
+            }
+        } else {
+            const cost = costNeeded(d.costs)
+            if (cost !== "") {
+                highlightCostNeeded(cost)
+            }
+        }
+    })
+    return decision
 }

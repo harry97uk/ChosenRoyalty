@@ -9,13 +9,18 @@
 </head>
 <body>
     <div id="main-menu-container">
-        <div id="play-game-button" class="play-game-button">
+        <div id="play-game-button" class="main-menu-button">
             Play Game 
+        </div>
+        <div id="about-button" class="main-menu-button">
+            About
         </div>
     </div>
     <div id="game-container" style="display: none;">
-        <canvas id="game-canvas" width="1000" height="500"></canvas>
+        <canvas id="background-canvas" width="1000" height="500"></canvas>
     </div>
+    <audio id="decision-chosen-audio" src="../src/game-sounds/decision-chosen.wav"></audio>
+    <audio id="monthly-change-audio" src="../src/game-sounds/monthly-change.wav"></audio>
     <script src="./main.js" type="module"></script>
 </body>
 </html>

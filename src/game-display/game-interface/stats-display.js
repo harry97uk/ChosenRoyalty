@@ -1,4 +1,4 @@
-import { city, defences } from "../../game-logic/player.js";
+import { city, defences, population } from "../../game-logic/player.js";
 import { scene } from "./game-interface.js";
 
 export function statsButton() {
@@ -6,7 +6,7 @@ export function statsButton() {
     statsButton.classList.add("stats-button")
     statsButton.id = "stats-button"
     statsButton.innerText = "S"
-    statsButton.onclick = displayStats
+    statsButton.onclick = displayStats;
 
     const gameContainer = document.getElementById("game-container")
     gameContainer.appendChild(initStatsDisplay())
@@ -20,7 +20,24 @@ function initStatsDisplay() {
     return statsDisplay
 }
 
+export function updateStats() {
+    switch (scene) {
+        case 1:
+            //add update for throne stats
+            break;
+        case 2:
+            document.getElementById("merchants-stat-display") === null ? updateCityStats() : updatePopulationStats() 
+            break;
+        case 3:
+            updateDefenceStats()
+            break;
+        default:
+            break;
+    }
+}
+
 export function displayStats() {
+    console.log("displaying...");
     const statsDisplay = document.getElementById("stats-container")
     statsDisplay.style.display === "flex" ? statsDisplay.style.display = "none" : statsDisplay.style.display = "flex";
 
@@ -53,8 +70,26 @@ function displayCityStats() {
         statsDisplay.removeChild(statsDisplay.lastChild);
     }
 
+    const statTypeContainer = document.createElement("div")
+    const cityStats = document.createElement("div")
+    const popStats = document.createElement("div")
+
+    cityStats.classList.add("stat-type")
+    popStats.classList.add("stat-type")
+
+    statTypeContainer.id = "stat-type-container"
+    cityStats.id = "city-stats-type"
+    popStats.id = "pop-stats-type"
+
+    cityStats.innerText = "City"
+    popStats.innerText = "Population"
+
+    popStats.onclick = displayPopulationStats
+
+    statTypeContainer.appendChild(cityStats)
+    statTypeContainer.appendChild(popStats)
+
     //Create stat element
-    const residents = document.createElement("div")
     const houses = document.createElement("div")
     const businesses = document.createElement("div")
     const growth = document.createElement("div")
@@ -62,7 +97,6 @@ function displayCityStats() {
     const services = document.createElement("div")
 
     //add id
-    residents.id = "residents-stat-display"
     houses.id = "houses-stat-display"
     businesses.id = "businesses-stat-display"
     growth.id = "growth-stat-display"
@@ -70,7 +104,6 @@ function displayCityStats() {
     services.id = "services-stat-display"
 
     //add stat class
-    residents.classList.add("stat")
     houses.classList.add("stat")
     businesses.classList.add("stat")
     growth.classList.add("stat")
@@ -78,7 +111,6 @@ function displayCityStats() {
     services.classList.add("stat")
 
     //add text value
-    residents.innerText = `Residents: ${city.residents}`
     houses.innerText = `Houses: ${city.houses}`
     farms.innerText = `Farms: ${city.farms}`
     businesses.innerText = `Businesses: ${city.businesses}`
@@ -86,7 +118,7 @@ function displayCityStats() {
     growth.innerText = `Growth: ${city.growth}%`
 
     //append to stat container
-    statsDisplay.appendChild(residents)
+    statsDisplay.appendChild(statTypeContainer)
     statsDisplay.appendChild(houses)
     statsDisplay.appendChild(farms)
     statsDisplay.appendChild(businesses)
@@ -95,8 +127,66 @@ function displayCityStats() {
 
 }
 
-export function updateCityStats() {
-    const residents = document.getElementById("residents-stat-display")
+function displayPopulationStats() {
+    const statsDisplay = document.getElementById("stats-container")
+    while (statsDisplay.firstChild) {
+        statsDisplay.removeChild(statsDisplay.lastChild);
+    }
+
+    const statTypeContainer = document.createElement("div")
+    const cityStats = document.createElement("div")
+    const popStats = document.createElement("div")
+
+    cityStats.classList.add("stat-type")
+    popStats.classList.add("stat-type")
+
+    statTypeContainer.id = "stat-type-container"
+    cityStats.id = "city-stats-type"
+    popStats.id = "pop-stats-type"
+
+    cityStats.innerText = "City"
+    popStats.innerText = "Population"
+
+    cityStats.onclick = displayCityStats
+
+    statTypeContainer.appendChild(cityStats)
+    statTypeContainer.appendChild(popStats)
+
+    const residents = document.createElement("div")
+    const farmers = document.createElement("div")
+    const merchants = document.createElement("div")
+    const civilServants = document.createElement("div")
+    const unemployed = document.createElement("div")
+
+    residents.id = "residents-stat-display"
+    farmers.id = "farmers-stat-display"
+    merchants.id = "merchants-stat-display"
+    civilServants.id = "civilServants-stat-display"
+    unemployed.id = "unemployed-stat-display"
+
+    residents.classList.add("stat")
+    farmers.classList.add("stat")
+    merchants.classList.add("stat")
+    civilServants.classList.add("stat")
+    unemployed.classList.add("stat")
+
+    residents.innerText = `Residents: ${population.residents}`
+    farmers.innerText = `Farmers: ${population.farmers} / ${city.farms*2}`
+    merchants.innerText = `Merchants: ${population.merchants} / ${city.businesses}`
+    civilServants.innerText = `Civil Servants: ${population.civilServants} / ${city.services * 2}`
+    unemployed.innerText = `Unemployed: ${population.unemployed}`
+
+    //append to stat container
+    statsDisplay.appendChild(statTypeContainer)
+    statsDisplay.appendChild(residents)
+    statsDisplay.appendChild(farmers)
+    statsDisplay.appendChild(merchants)
+    statsDisplay.appendChild(civilServants)
+    statsDisplay.appendChild(unemployed)
+
+}
+
+function updateCityStats() {
     const houses = document.getElementById("houses-stat-display")
     const businesses = document.getElementById("businesses-stat-display")
     const growth = document.getElementById("growth-stat-display")
@@ -104,12 +194,25 @@ export function updateCityStats() {
     const services = document.getElementById("services-stat-display")
 
     //add text value
-    residents.innerText = `Residents: ${city.residents}`
     houses.innerText = `Houses: ${city.houses}`
     farms.innerText = `Farms: ${city.farms}`
     businesses.innerText = `Businesses: ${city.businesses}`
     services.innerText = `Services: ${city.services}`
     growth.innerText = `Growth: ${city.growth}%`
+}
+
+function updatePopulationStats() {
+    const residents = document.getElementById("residents-stat-display")
+    const farmers = document.getElementById("farmers-stat-display")
+    const merchants = document.getElementById("merchants-stat-display")
+    const civilServants = document.getElementById("civilServants-stat-display")
+    const unemployed = document.getElementById("unemployed-stat-display")
+
+    residents.innerText = `Residents: ${population.residents}`
+    farmers.innerText = `Farmers: ${population.farmers} / ${city.farms*2}`
+    merchants.innerText = `Merchants: ${population.merchants} / ${city.businesses}`
+    civilServants.innerText = `Civil Servants: ${population.civilServants} / ${city.services * 2}`
+    unemployed.innerText = `Unemployed: ${population.unemployed}`
 }
 
 function displayDefenceStats() {
@@ -119,12 +222,19 @@ function displayDefenceStats() {
     }
 
     const guards = document.createElement("div")
-    guards.classList.add("stat")
     const wallDefenceLevel = document.createElement("div")
-    wallDefenceLevel.classList.add("stat")
     const ballistas = document.createElement("div")
-    ballistas.classList.add("stat")
     const boilingOil = document.createElement("div")
+
+    //add id
+    guards.id = "guards-stat-display"
+    wallDefenceLevel.id = "wallDefenceLevel-stat-display"
+    ballistas.id = "ballistas-stat-display"
+    boilingOil.id = "boilingOil-stat-display"
+
+    guards.classList.add("stat")
+    wallDefenceLevel.classList.add("stat")
+    ballistas.classList.add("stat")
     boilingOil.classList.add("stat")
 
     guards.innerText = `Guards: ${defences.guards}`
@@ -136,4 +246,17 @@ function displayDefenceStats() {
     statsDisplay.appendChild(wallDefenceLevel)
     statsDisplay.appendChild(ballistas)
     statsDisplay.appendChild(boilingOil)
+}
+
+function updateDefenceStats() {
+    const guards = document.getElementById("guards-stat-display")
+    const wallDefenceLevel = document.getElementById("wallDefenceLevel-stat-display")
+    const ballistas = document.getElementById("ballistas-stat-display")
+    const boilingOil = document.getElementById("boilingOil-stat-display")
+
+    //add text value
+    guards.innerText = `Guards: ${defences.guards}`
+    wallDefenceLevel.innerText = `Wall Defence Level: ${defences.wallDefenceLevel}`
+    ballistas.innerText = `Ballistas: ${defences.ballistas}`
+    boilingOil.innerText = `Boiling Oil: ${defences.boilingOil ? "Yes" : "No"}`
 }

@@ -3,7 +3,7 @@ import { setScene } from "../game-interface/game-interface.js";
 // Render the king's throne room
 export function renderThroneRoom() {
   setScene(1)
-  const canvas = document.getElementById("game-canvas");
+  const canvas = document.getElementById("background-canvas");
   const ctx = canvas.getContext('2d');
 
   // Clear the canvas

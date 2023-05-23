@@ -1,11 +1,18 @@
-import { initialiseGameDisplay } from "./game-display/game-interface/game-interface.js";
+import { barbarianAttack } from "./game-logic/attacks/attacks.js";
+import { initialiseGameDisplay, scene } from "./game-display/game-interface/game-interface.js";
+import { isGameLost } from "./game-logic/end-game.js";
 import { incrementTime } from "./game-logic/time.js";
+import { animateAttackers, initAttackersAnimation, updateAttackers } from "./game-display/animations/attackers.js";
 
 const playGameButton = document.getElementById("play-game-button")
 playGameButton.onclick = playGame
 
 let lastUpdateTime = 0;
-const interval = 1000; // 1 second interval
+let lastAttackTime = 0;
+let beingAttacked = false
+const interval = 500; // 1 second interval
+
+let endGame = false
 
 function playGame() {
     const mainMenuContainer = document.getElementById("main-menu-container")
@@ -13,6 +20,7 @@ function playGame() {
     mainMenuContainer.style.display = "none"
     gameContainer.style.display = "flex"
     initialiseGameDisplay();
+    initAttackersAnimation();
     gameLoop()
 }
 
@@ -42,8 +50,28 @@ function update(deltaTime, timestamp) {
         // Perform the desired action once a second
         incrementTime();
 
+        if (isGameLost()) {
+            //end the game
+        }
+
+        if (Math.random() < 0.5 && timestamp - lastAttackTime >= 5000*3 && !beingAttacked) {
+            beingAttacked = true
+            barbarianAttack()
+            //
+            document.getElementById("attacker").style.visibility = "visible"
+            lastAttackTime = timestamp
+        }
+
+        
+        
+
         // Reset the last update time
         lastUpdateTime = timestamp;
+    }
+
+    if (beingAttacked) {
+        //update attack animation while not in scene
+        updateAttackers()
     }
 
 }
@@ -52,4 +80,13 @@ function update(deltaTime, timestamp) {
 Render game graphics
 */
 function render() {
+    if (beingAttacked && scene == 3) {
+        document.getElementById("attacker").style.visibility = "visible";
+        const final = animateAttackers();
+        if (final) {
+            beingAttacked = false
+        }
+    } else if (beingAttacked) {
+        document.getElementById("attacker").style.visibility = "hidden";
+    }
 }

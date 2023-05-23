@@ -2,9 +2,9 @@ import { setScene } from "../game-interface/game-interface.js";
 
 // Render the castle walls scene
 export function renderCastleScene() {
-  setScene(3)
-  const canvas = document.getElementById("game-canvas")
-  const ctx = canvas.getContext('2d')
+  setScene(3);
+  const canvas = document.getElementById("background-canvas");
+  const ctx = canvas.getContext('2d');
 
   // Clear the canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);

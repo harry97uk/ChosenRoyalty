@@ -7,10 +7,15 @@
     height: 600px;
 }
 
-#game-canvas {
-    position: relative;
+#background-canvas {
+    position: absolute;
     width: 1000px;
     height: 500px;
+}
+
+.attackers-canvas {
+    position: absolute;
+    z-index: 99;
 }
 
 #main-menu-container {
@@ -20,14 +25,16 @@
     margin: auto;
     width: 1000px;
     height: 600px;
+    flex-direction: column;
     justify-content: center;
     padding: 25px;
 }
 
-.play-game-button {
+.main-menu-button {
     position: relative;
     width: 200px;
     height: 100px;
+    margin: auto;
     text-align: center;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -42,6 +49,29 @@
     background-image: linear-gradient(white, antiquewhite);
     flex-direction: column;
     justify-content: space-between;
+}
+
+#stat-type-container {
+    display: flex;
+    position: relative;
+    width: 250px;
+    height: 60px;
+    flex-direction: row;
+    justify-content: space-between;
+    border-bottom: 1mm solid black;
+}
+
+.stat-type {
+    margin: auto;
+    position: relative;
+    height: 50px;
+    width: 200px;
+    text-align: center;
+    font-size: large;
+    font-weight: 700;
+    padding: 10px 0 0 0;
+    border-left: 0.1mm solid black;
+    background-color: rgba(red, green, blue, 1);
 }
 
 .stat {
@@ -113,40 +143,14 @@
     justify-content: space-between;
 }
 
-.gold-display {
+.infobar-display {
     position: relative;
-    width: 200px;
+    width: 150px;
     height: 50px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: auto;
     text-align: center;
-    padding: 15px;
-}
-
-.opinion-display {
-    position: relative;
-    width: 200px;
-    height: 50px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    text-align: center;
-    padding: 15px;
-}
-
-.manpower-display {
-    position: relative;
-    width: 200px;
-    height: 50px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    text-align: center;
-    padding: 15px;
-}
-
-.time-display {
-    position: relative;
-    width: 200px;
-    height: 50px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    text-align: center;
-    padding: 15px;
+    padding: 15px 0 0 0;
 }
 
 .navbar {
@@ -159,32 +163,131 @@
     justify-content: space-between;
 }
 
-.throne-room-button {
+.navbar-button {
     position: relative;
     height: 50px;
     width: 200px;
     margin: 25px;
-    background-color: red;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     text-align: center;
 }
 
-.city-view-button {
-    position: relative;
+.warning {
+    position: absolute;
+    top: 60%;
+    left: 400px;
     height: 50px;
     width: 200px;
-    margin: 25px;
-    background-color: blue;
+    padding: 25px 0 0 0;
+    background-color: aliceblue;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border: 1mm solid black;
+    color: red;
     text-align: center;
 }
 
-.military-view-button {
-    position: relative;
+.attacker {
+    position: absolute;
+    width: 30px;
+    height: 60px;
+    z-index: 99;
+    margin: auto;
+    background-image: url("../game-display/sprite-sheets/run.png");
+    /* background-position: -121px 42px; */
+    /* animation: run-animation 2s steps(10) infinite; */
+}
+
+@keyframes run-animation {
+    0% { background-position: 0 42px; }
+    10% { background-position: -121px 42px; }
+    20% { background-position: -204px 42px; }
+    30% { background-position: -297px 42px; }
+    40% { background-position: -390px 42px; }
+    50% { background-position: -483px 42px; }
+    60% { background-position: -576px 42px; }
+    70% { background-position: -669px 42px; }
+    80% { background-position: -762px 42px; }
+    90% { background-position: -855px 42px; }
+    100% { background-position: -948px 42px; }
+}
+
+
+.attack-result {
+    position: absolute;
+    top: 60%;
+    left: 400px;
     height: 50px;
     width: 200px;
-    margin: 25px;
-    background-color: green;
+    padding: 25px 0 0 0;
+    background-color: aliceblue;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border: 1mm solid black;
+    color: black;
     text-align: center;
+}
+
+.flashing {
+    animation: flashing 2s step-end both;
+}
+
+@keyframes flashing {
+    0% {
+        visibility: visible;
+    }
+
+    10% {
+        visibility: hidden;
+    }
+
+    20% {
+        visibility: visible;
+    }
+
+    30% {
+        visibility: hidden;
+    }
+
+    40% {
+        visibility: visible;
+    }
+
+    50% {
+        visibility: hidden;
+    }
+
+    60% {
+        visibility: visible;
+    }
+
+    70% {
+        visibility: hidden;
+    }
+
+    80% {
+        visibility: visible;
+    }
+
+    90% {
+        visibility: hidden;
+    }
+
+    100% {
+        visibility: visible;
+    }
+}
+
+.noselect {
+    -webkit-touch-callout: none;
+    /* iOS Safari */
+    -webkit-user-select: none;
+    /* Safari */
+    -khtml-user-select: none;
+    /* Konqueror HTML */
+    -moz-user-select: none;
+    /* Old versions of Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
+    user-select: none;
+    /* Non-prefixed version, currently
+                                    supported by Chrome, Edge, Opera and Firefox */
 }

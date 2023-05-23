@@ -1,5 +1,5 @@
 import { setTime } from "../game-display/game-interface/game-interface.js";
-import { calculateMonthlyChanges, calculateYearlyChanges } from "./player.js";
+import { calculateMonthlyChanges } from "./monthly-changes.js";
 
 var intervalId
 let time = {
