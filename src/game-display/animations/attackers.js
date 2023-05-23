@@ -1,34 +1,35 @@
 // Animate people attacking the walls
-const attackerWidth = 60;
-const attackerHeight = 38;
 const attackerSpeed = 1;
-let attackerX = 1000;
-let attackerY = 400;
 let animationFinished = false
+let offsetPositions = [72, 192, 312, 432, 552, 672, 792, 912, 1032]
+let attackers = []
 
-let currentFrame = 0
-let offset = 72
-
-// Draw the current frame of the animation
-const spriteSheet = new Image();
-
-export function initAttackersAnimation() {
-    const attacker = document.createElement("div");
-    attacker.id = "attacker"
-    attacker.classList.add("attacker")
-    attacker.width = "30";
-    attacker.height = "40";
-    const gameContainer = document.getElementById("game-container");
-    gameContainer.appendChild(attacker);
-    spriteSheet.src = "/src/game-display/sprite-sheets/run.png"; // Replace with your sprite sheet image path
+export function initAttackersAnimation(troopAmount) {
+    for (let i = 0; i < troopAmount; i++) {
+        const attacker = document.createElement("div");
+        attacker.id = `attacker-${i}`
+        let attackerAttributes = {
+            id: attacker.id,
+            x: Number((1000 + (Math.random() * 200)).toFixed(0)),
+            y: Number((400 + (Math.random() * 75)).toFixed(0)),
+            offset: offsetPositions[Math.floor(Math.random()*offsetPositions.length)]
+        }
+        attackers.push(attackerAttributes)
+        attacker.classList.add("attacker")
+        attacker.width = "30";
+        attacker.height = "40";
+        const gameContainer = document.getElementById("game-container");
+        gameContainer.appendChild(attacker);
+    }
 }
 
-export function animateAttackers() {
+export function isAnimationFinished() {
     //renderAttackers()
     if (animationFinished) {
-        document.getElementById("attacker").style.visibility = "hidden";
-        attackerX = 1000;
-        attackerY = 400;
+        attackers.forEach(a => {
+            const attacker = document.getElementById(a.id)
+            attacker.remove()
+        })
         animationFinished = false
         return true
     }
@@ -36,57 +37,28 @@ export function animateAttackers() {
 }
 
 export function updateAttackers() {
-    // Move attackers horizontally
-    attackerX -= attackerSpeed;
+
+    attackers.forEach(a => {
+        a.x -= attackerSpeed
+        const attacker = document.getElementById(a.id)
+        attacker.style.left = `${a.x}px`
+        attacker.style.top = `${a.y}px`
+        attacker.style.backgroundPosition = `${a.offset}px 42px`
+
+        if (a.x % 5 == 0) {
+            a.offset += 120
+            if (a.offset > 1200) {
+                a.offset = 72
+            }
+        }
+
+        if (a.x < 225) {
+            a.offset = -0.01
+        }
+    })
 
     // Reset attacker position when it reaches the end of the canvas
-    if (attackerX < 225) {
+    if (attackers.every(a => a.x < 225)) {
         animationFinished = true
     }
-
-    const attacker = document.getElementById("attacker")
-    attacker.style.left = `${attackerX}px`
-    attacker.style.top = `${attackerY}px`
-
-    // Set the background position with the offset
-    const attackerElement = document.querySelector('.attacker');
-    attackerElement.style.backgroundPosition = `${offset}px 42px`;
-
-    if (attackerX % 5 == 0) {
-        offset += 120
-        if (offset > 1200) {
-            offset = 72
-        }
-    }
-
-}
-
-function renderAttackers() {
-    const canvas = document.getElementById("attackers");
-    const ctx = canvas.getContext('2d');
-
-    canvas.style.left = `${attackerX}px`
-    canvas.style.top = `${attackerY}px`
-
-    // Clear the canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    const numFrames = 10; // Number of frames in the animation
-    const frameWidth = 20; // Width of each frame in the sprite sheet
-    const frameHeight = 38; // Height of each frame in the sprite sheet
-
-    ctx.drawImage(
-        spriteSheet,
-        currentFrame * frameWidth,
-        0,
-        frameWidth,
-        frameHeight,
-        0,
-        0,
-        attackerWidth,
-        attackerHeight
-    );
-
-    currentFrame = (currentFrame + 1) % numFrames; // Calculate the current frame based on time
-
 }

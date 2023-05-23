@@ -1,8 +1,8 @@
-import { barbarianAttack } from "./game-logic/attacks/attacks.js";
+import { barbarianAttack, barbarians } from "./game-logic/attacks/attacks.js";
 import { initialiseGameDisplay, scene } from "./game-display/game-interface/game-interface.js";
 import { isGameLost } from "./game-logic/end-game.js";
 import { incrementTime } from "./game-logic/time.js";
-import { animateAttackers, initAttackersAnimation, updateAttackers } from "./game-display/animations/attackers.js";
+import { isAnimationFinished, initAttackersAnimation, updateAttackers } from "./game-display/animations/attackers.js";
 
 const playGameButton = document.getElementById("play-game-button")
 playGameButton.onclick = playGame
@@ -20,7 +20,6 @@ function playGame() {
     mainMenuContainer.style.display = "none"
     gameContainer.style.display = "flex"
     initialiseGameDisplay();
-    initAttackersAnimation();
     gameLoop()
 }
 
@@ -57,8 +56,10 @@ function update(deltaTime, timestamp) {
         if (Math.random() < 0.5 && timestamp - lastAttackTime >= 5000*3 && !beingAttacked) {
             beingAttacked = true
             barbarianAttack()
-            //
-            document.getElementById("attacker").style.visibility = "visible"
+            initAttackersAnimation(barbarians.troopAmount);
+            document.querySelectorAll(".attacker").forEach(a => {
+                a.style.visibility = "visible"
+            })
             lastAttackTime = timestamp
         }
 
@@ -81,12 +82,15 @@ Render game graphics
 */
 function render() {
     if (beingAttacked && scene == 3) {
-        document.getElementById("attacker").style.visibility = "visible";
-        const final = animateAttackers();
-        if (final) {
+        document.querySelectorAll(".attacker").forEach(a => {
+            a.style.visibility = "visible"
+        })
+        if (isAnimationFinished()) {
             beingAttacked = false
         }
     } else if (beingAttacked) {
-        document.getElementById("attacker").style.visibility = "hidden";
+        document.querySelectorAll(".attacker").forEach(a => {
+            a.style.visibility = "hidden"
+        })
     }
 }

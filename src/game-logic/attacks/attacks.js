@@ -87,3 +87,5 @@ function displayAttackResult(playerWon) {
         gameContainer.removeChild(attackResult)
     }, 5000)
 }
+
+export {barbarians}
